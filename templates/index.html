@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <title>Document</title>
+</head>
+<script>
+    url = `http://192.168.1.43:800/`
+
+    function add_colums(colums){
+        parent_object = document.querySelector(".products .products_table")
+        for(i in Object.keys(colums)){
+            colums_block = document.createElement('tr')
+            colums_name = document.createElement("td")
+            colums_name.classList.add("main")
+
+            colums_name.innerHTML = Object.keys(colums)[i]
+            colums_block.appendChild(colums_name)
+            parent_object.appendChild(colums_block)
+        }
+    }
+
+    function add_product(product){
+        colums = document.querySelectorAll(".products .products_table tr")
+        for(i in colums){
+            if (i < colums.length){
+                value = document.createElement("th")
+                if(i == 0){
+                    value.innerHTML = product["name"]
+                }
+                else{
+                    console.log(colums[i])
+                    value.innerHTML = product["all_characteristics"][colums[i].querySelector(".main").innerHTML]
+                }
+                colums[i].appendChild(value)
+
+
+            }
+        }
+    }
+
+    function get_orders(prompt){
+        const params = new URLSearchParams({
+                "prompt": prompt
+            })
+        fetch(url + `get_orders?${params.toString()}`, {
+            method: 'GET',
+            
+        })
+        .then(response => response.json()) 
+        .then(data => {
+            console.log(data)
+            add_colums(data["test"][0]["all_characteristics"])
+            for(i in data["test"]){
+                add_product(data["test"][i])
+            }
+        })
+    }
+
+    get_orders("test")
+</script>
+<style>
+    table {
+    border-collapse: collapse; /* Убирает двойные линии между ячейками */
+    width: 100%;
+    }
+
+    th, td {
+        border: 1px solid black; /* Добавляет границы */
+        padding: 8px; /* Добавляет отступ внутри ячеек */
+        text-align: center; /* Выравнивает текст по центру */
+    }
+    th {
+        background-color: #f2f2f2; /* Задает цвет фона для заголовков */
+    }
+</style>
+<body>
+    <div class="products">
+        <table class="products_table">
+            <tr>
+                <th class="main">Имя</th>
+            </tr>
+            
+        </table>
+    </div>
+</body>
+</html>

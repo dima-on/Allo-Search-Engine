@@ -1,0 +1,12 @@
+table {
+    border-collapse: collapse; /* Убирает двойные линии между ячейками */
+    width: 100%;
+}
+th, td {
+    border: 1px solid black; /* Добавляет границы */
+    padding: 8px; /* Добавляет отступ внутри ячеек */
+    text-align: center; /* Выравнивает текст по центру */
+}
+th {
+    background-color: #f2f2f2; /* Задает цвет фона для заголовков */
+}
