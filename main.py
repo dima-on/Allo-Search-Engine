@@ -1,11 +1,11 @@
 import requests
-import until
+import handlers.until as until
 from bs4 import BeautifulSoup
 import sys
-from handler_data import Product, DataHendler
+from handlers.handler_data import Product, DataHendler
 import config
-from html_handler import HandlerBlock
-from handler_order import HendlerOrder
+from handlers.html_handler import HandlerBlock
+from handlers.handler_order import HendlerOrder
 sys.stdout.reconfigure(encoding='utf-8')
 
 
@@ -98,23 +98,22 @@ class HandlerCode:
             self.url = f'{self.url}/{key}{self.filters[key]}'
 
 
-def test():
+def Get_orders(prompt: str):
     url = "https://allo.ua/ru/catalogsearch/result/index/"
+    prompt = prompt
+
     find_items = "product-card"
-    prompt = "монитор"
     HC_class = HandlerCode(url=url, prompt=prompt, find_items=find_items)
-    # HC_class.add_filter(filter="price from", value=30000)
-    # HC_class.add_filter(filter="price to", value=31000)
 
     HC_class.apply_param()
     products = HC_class.get_all_order(max_page=1)
-    
 
     HO = HendlerOrder(products=products)
     HO.sort_orders()
 
     HO.get_colums()
-
     HO.get_all_characteristics()
+    HO.get_colums_rate()
+    HO.get_all_rate()
 
     return HO.products

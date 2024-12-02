@@ -1,6 +1,6 @@
 from flask import Flask, render_template, jsonify, request
 import main
-app = Flask(__name__)
+app = Flask(__name__) 
 
 class Visual:
     def __init__(self, port: int = 800) -> None:
@@ -15,16 +15,16 @@ class Visual:
     
     @app.route('/get_orders', methods=['GET'])
     def get_orders():
-        products = main.test()
+        prompt = request.args.get("prompt")
+        print(prompt)
+
+        products = main.Get_orders(prompt=prompt)
         products_list = []
+
         for el in products:
-            # print(el.all_characteristics)
-            # print("________" * 100)
             products_list.append(el.to_dict())
-        # for el in products_list:
-        #     print(el["all_characteristics"])
-        #     print("_" * 30)
-        return jsonify({'message': 'Получено значение!', "test": products_list})
+
+        return jsonify({'message': 'Получено значение!', "orders": products_list})
 
 
     

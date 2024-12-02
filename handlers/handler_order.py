@@ -22,7 +22,7 @@ class HendlerOrder:
         
         for product in self.products:
             for key in list(product.characteristics.keys()):
-                colums[key] = "None"
+                colums[key] = "-"
 
         self.colums = colums
 
@@ -31,7 +31,19 @@ class HendlerOrder:
             self.products[product_index].set_all_characteristics_params(self.colums)
 
 
+    def get_colums_rate(self):
+        colums = {}
+        for product in self.products:
+            for key in list(product.rating.keys()):
+                colums[key] = "-"
+                
 
+        self.colums_rate = colums
+
+    def get_all_rate(self):
+        for product_index in range(len(self.products)):
+            self.products[product_index].set_all_rate(self.colums_rate)
+    
 
         
 

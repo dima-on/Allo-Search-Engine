@@ -15,6 +15,10 @@
             colums_block = document.createElement('tr')
             colums_name = document.createElement("td")
             colums_name.classList.add("main")
+            colums_name.classList.add("characteristics")
+            colums_name.classList.add("param")
+
+
 
             colums_name.innerHTML = Object.keys(colums)[i]
             colums_block.appendChild(colums_name)
@@ -27,21 +31,83 @@
         for(i in colums){
             if (i < colums.length){
                 value = document.createElement("th")
-                if(i == 0){
-                    value.innerHTML = product["name"]
+                value.classList.add("characteristics")
+
+                main_class = colums[i].querySelector(".main")
+                if (main_class.classList.length > 1 && main_class.classList[2] != "param"){
+                    console.log(colums[i])
+                    if (main_class.classList[1] == "image"){
+                        image = document.createElement("img")
+                        image.src = product[main_class.classList[1]]
+                        value.appendChild(image)
+                    }
+                    else{
+                        
+                        value.innerHTML = product[main_class.classList[1]]
+                    }
+                    value.classList.add("root")
+
+                        
                 }
                 else{
-                    console.log(colums[i])
-                    value.innerHTML = product["all_characteristics"][colums[i].querySelector(".main").innerHTML]
+                    if(main_class.classList[1] == "characteristics"){
+                        if (product["all_characteristics"][colums[i].querySelector(".main").innerHTML] != null){
+                            value.innerHTML = product["all_characteristics"][colums[i].querySelector(".main").innerHTML]
+                        }
+                        else{
+                            value.innerHTML = "---"
+                        }
+
+                    }
+                    else{
+                        value = document.createElement("th")
+                        value.classList.add("rate")
+                        value.innerHTML = product["all_rate"][colums[i].querySelector(".main").innerHTML]
+                    }
                 }
                 colums[i].appendChild(value)
 
-
             }
+
+        }
+    }
+
+    function clear_data(){
+        elements = document.querySelectorAll('.products_container .products .products_table .characteristics:not(root)')
+        for (i in elements){
+            if (elements[i] instanceof HTMLElement) { 
+                elements[i].remove()
+            }
+        }
+
+        elements = document.querySelectorAll('.products_container .products .products_table .rate:not(root)')
+        for (i in elements){
+            if (elements[i] instanceof HTMLElement) { 
+                elements[i].remove()
+            }
+        }
+        
+    }
+
+    function add_rate_colums(colums){
+        parent_object = document.querySelector(".products .products_table")
+        for(i in Object.keys(colums)){
+            colums_block = document.createElement('tr')
+            colums_name = document.createElement("td")
+            colums_name.classList.add("main")
+            colums_name.classList.add("rate")
+            colums_name.classList.add("param")
+
+
+
+            colums_name.innerHTML = Object.keys(colums)[i]
+            colums_block.appendChild(colums_name)
+            parent_object.appendChild(colums_block)
         }
     }
 
     function get_orders(prompt){
+        
         const params = new URLSearchParams({
                 "prompt": prompt
             })
@@ -52,38 +118,205 @@
         .then(response => response.json()) 
         .then(data => {
             console.log(data)
-            add_colums(data["test"][0]["all_characteristics"])
-            for(i in data["test"]){
-                add_product(data["test"][i])
+            add_rate_colums(data["orders"][0]["all_rate"])
+            add_colums(data["orders"][0]["all_characteristics"])
+            for(i in data["orders"]){
+                add_product(data["orders"][i])
             }
         })
     }
 
-    get_orders("test")
+    function make_req(){
+        clear_data()
+        prompt = document.querySelector('#prompt_input').value
+        get_orders(prompt)
+    }
 </script>
+
 <style>
+    body{
+        padding: 0;
+        margin: 0;
+    }
+
     table {
     border-collapse: collapse; /* Убирает двойные линии между ячейками */
     width: 100%;
     }
 
     th, td {
-        border: 1px solid black; /* Добавляет границы */
-        padding: 8px; /* Добавляет отступ внутри ячеек */
+        border: 2px solid rgba(87, 87, 87, 0.5); /* Добавляет границы */
+        padding: 10px; /* Добавляет отступ внутри ячеек */
         text-align: center; /* Выравнивает текст по центру */
     }
     th {
         background-color: #f2f2f2; /* Задает цвет фона для заголовков */
     }
+
+    .products .products_table tbody .rate{
+        color: rgb(0, 175, 15);
+    }
+
+    .products .products_table tbody .main.rate{
+        color: rgb(203, 34, 34);
+    }
+
+    .products .products_table tbody .param{
+        font-family: Arial, Helvetica, sans-serif;
+        font-size: large;
+
+    }
+
+    .products{
+        width: 80%;
+        height: 700px;
+        overflow: auto;
+        left: 50%;
+        position: absolute;
+        transform: translate(-50%, 0);
+
+    }
+    .products_container{
+        position: relative;
+        margin-top: 30px;
+    }
+
+    .products::-webkit-scrollbar {
+        width: 6px; /* Ширина полосы */
+        height: 6px; /* Высота полосы (для горизонтальной прокрутки) */
+        background-color: #c4c4c4;
+        border-radius: 40px;
+    }
+
+    .products::-webkit-scrollbar-thumb {
+        background: #888; /* Цвет ползунка */
+        border-radius: 6px;
+    }
+
+    .products .products_table tbody .main:not(.param){
+        font-size: larger;
+        font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+    }
+
+    .header{
+        width: 100%;
+        height: 100px;
+        background-color: rgb(55, 55, 55);
+        position: relative;
+    }
+
+    .header h1{
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -100%);
+        color: white;
+        font-size: 40px;
+        font-family: Arial, Helvetica, sans-serif;
+    }
+
+    #prompt_input {
+        height: 40px;
+        width: 200px;
+        font-size: 25px;
+        text-align: center;
+        border-radius: 10px;
+        border: 0;
+        background-color: rgba(122, 122, 122, 0.754);
+        color: white;
+    }
+
+    #prompt_input:focus{
+        border: 0; 
+        outline: none;
+
+    }
+
+    #prompt_input::placeholder {
+        font-size: 25px;
+        text-align: center;
+        font-family: Arial, Helvetica, sans-serif;
+        color: white;
+
+    }
+    .req .center_req span{
+        font-family: Arial, Helvetica, sans-serif;
+        font-size: 30px;
+    }
+
+    .req{
+        position: relative;
+        height: 200px;
+        width: 100%;
+    }
+
+    .req .center_req{
+        position: absolute;
+        top: 80%;
+        height: 100px;
+        left: 50%;
+        transform: translate(-50%, -100%);
+    }
+
+    .req .center_req .button_con button{
+        width: 300px;
+        height: 50px;
+        border: 0;
+        border-radius: 10px;
+        background: rgba(122, 122, 122, 0.754);
+        color: white;
+        font-size: 30px;
+        font-family: Arial, Helvetica, sans-serif;
+        position: absolute;
+        left: 50%;
+        transform: translate(-50%, 0);
+        margin-top: 20px;
+        transition: all 0.2s ease-in-out;
+    }
+
+    .req .center_req .button_con button:hover{
+        background: rgba(122, 122, 122, 1);
+        width: 350px;
+    }
+    .req .center_req .button_con{
+        position: relative;
+        width: 100%;
+    }
+
+
 </style>
+
 <body>
-    <div class="products">
-        <table class="products_table">
-            <tr>
-                <th class="main">Имя</th>
-            </tr>
-            
-        </table>
+
+    <div class="header">
+        <h1>Allo Screacher</h1>
     </div>
+    <div class="req">
+        <div class="center_req">
+            <span>Enter your prompt: </span>
+            <input id="prompt_input" type="text", placeholder="prompt">
+            <div class="button_con">
+                <button onclick="make_req()">Get orders</button>
+            </div>
+        </div>
+    </div>
+    <div class="products_container">
+        <div class="products">
+            <table class="products_table">
+                <tr>
+                    <th class="main name">Имя</th>
+                </tr>
+                <tr>
+                    <th class="main image">Картинка</th>
+                </tr>
+                <tr>
+                    <th class="main price">Цена</th>
+                </tr>
+                
+            </table>
+        </div>
+    </div>
+    
+
 </body>
 </html>

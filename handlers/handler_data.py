@@ -1,4 +1,4 @@
-import until
+import handlers.until as until
 import sys
 from html_handler import HandlerBlock
 sys.stdout.reconfigure(encoding='utf-8')
@@ -18,6 +18,7 @@ class Product:
         self.characteristics = characteristics
 
     def set_rating(self, rating: dict[str, float]):
+        print(list(rating.keys()))
         self.rating = rating
 
     def get_data(self):
@@ -36,6 +37,14 @@ class Product:
 
         self.all_characteristics = new
 
+    def set_all_rate(self, all_rate: dict):
+        new = {}
+        for key in list(all_rate.keys()):
+            new[key] = self.rating.get(key)
+
+        print(new)
+        self.all_rate = new
+
     def to_dict(self):
         info_dict = {
             "name": self.name,
@@ -44,7 +53,8 @@ class Product:
             "image": self.image,
             "characteristics": self.characteristics,
             "rating": self.rating,
-            "all_characteristics": self.all_characteristics
+            "all_characteristics": self.all_characteristics,
+            "all_rate": self.all_rate
 
         }
 
@@ -90,18 +100,22 @@ class DataHendler:
             general_rating = self.classes_data["/[document]/product-estimate/average-estimate/average-estimate__rating"][0].text
             general_rating = general_rating[11:]
 
-            more_ratings = self.classes_data["/[document]/product-estimate/product-estimate__center/detail-estimate/detail-estimate-list/detail-estimate-list__item"]
-            all_rating = {
-                "general": float(general_rating)
-            }
-            for el in more_ratings:
+            
+            more_ratings = self.classes_data.get("/[document]/product-estimate/product-estimate__center/detail-estimate/detail-estimate-list/detail-estimate-list__item")
+            if more_ratings:
+                all_rating = {
+                    "general": float(general_rating)
+                }
+                for el in more_ratings:
 
-                HB_class = HandlerBlock(str(el))
-                classes, others = HB_class.Handler()
-                name_rate = classes["/[document]/detail-estimate-list__item/detail-estimate-list__label"][0].text
-                value_rate = classes["/[document]/detail-estimate-list__item/detail-estimate-list__value/detail-estimate-list__rating"][0].text
+                    HB_class = HandlerBlock(str(el))
+                    classes, others = HB_class.Handler()
+                    name_rate = classes["/[document]/detail-estimate-list__item/detail-estimate-list__label"][0].text
+                    value_rate = classes["/[document]/detail-estimate-list__item/detail-estimate-list__value/detail-estimate-list__rating"][0].text
 
-                all_rating[name_rate] = float(value_rate)
+                    all_rating[name_rate] = float(value_rate)
+            else:
+                all_rating = {}
 
             product.set_rating(all_rating)
 
