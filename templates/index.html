@@ -34,22 +34,21 @@
                 value.classList.add("characteristics")
 
                 main_class = colums[i].querySelector(".main")
-                if (main_class.classList.length > 1 && main_class.classList[2] != "param"){
-                    console.log(colums[i])
-                    if (main_class.classList[1] == "image"){
-                        image = document.createElement("img")
-                        image.src = product[main_class.classList[1]]
-                        value.appendChild(image)
+                if (main_class){
+                    if (main_class.classList.length > 1 && main_class.classList[2] != "param"){
+                        if (main_class.classList[1] == "image"){
+                            image = document.createElement("img")
+                            image.src = product[main_class.classList[1]]
+                            value.appendChild(image)
+                        }
+                        else{
+                            
+                            value.innerHTML = product[main_class.classList[1]]
+                        }
+                        value.classList.add("root")
+
                     }
                     else{
-                        
-                        value.innerHTML = product[main_class.classList[1]]
-                    }
-                    value.classList.add("root")
-
-                        
-                }
-                else{
                     if(main_class.classList[1] == "characteristics"){
                         if (product["all_characteristics"][colums[i].querySelector(".main").innerHTML] != null){
                             value.innerHTML = product["all_characteristics"][colums[i].querySelector(".main").innerHTML]
@@ -64,10 +63,15 @@
                         value.classList.add("rate")
                         value.innerHTML = product["all_rate"][colums[i].querySelector(".main").innerHTML]
                     }
-                }
-                colums[i].appendChild(value)
 
+                    }
+                    colums[i].appendChild(value)
+
+                }
+                
             }
+
+            
 
         }
     }

@@ -1,12 +1,12 @@
 import handlers.until as until
 import sys
-from html_handler import HandlerBlock
+from . html_handler import HandlerBlock
 sys.stdout.reconfigure(encoding='utf-8')
 
 
 class Product:
     def __init__(self) -> None:
-        pass
+        self.rating = {"general": 0}
 
     def set_base_data(self, **kwargs):
         self.name = kwargs.get("name")
@@ -18,8 +18,8 @@ class Product:
         self.characteristics = characteristics
 
     def set_rating(self, rating: dict[str, float]):
-        print(list(rating.keys()))
-        self.rating = rating
+        if rating != None:
+            self.rating = rating
 
     def get_data(self):
         print(f'Name: {self.name}')

@@ -15,7 +15,9 @@ class Req_part:
 
     def get_html_code(self, prompt: str) -> str:
         params: dict[str, any] = {"q": prompt}
-        response = requests.get(self.url, params=params)
+        url = f"{self.url}?q={prompt}&cat"
+        print(url)
+        response = requests.get(url)
         return response.content
 
     def get_element(self, element_type: str, element_class: str, html_code: str) -> list:
@@ -42,7 +44,7 @@ class HandlerCode:
         products = []
         ind = 0
         for block in blocks:
-            if ind >= 5:
+            if ind >= 10:
                 break
             HB_class = HandlerBlock(str(block))
             classes, others = HB_class.Handler()
@@ -96,16 +98,20 @@ class HandlerCode:
     def apply_param(self):
         for key in list(self.filters.keys()):
             self.url = f'{self.url}/{key}{self.filters[key]}'
+            print(self.url)
 
 
 def Get_orders(prompt: str):
-    url = "https://allo.ua/ru/catalogsearch/result/index/"
+    url = "https://allo.ua/ru/catalogsearch/result/index"
     prompt = prompt
 
     find_items = "product-card"
     HC_class = HandlerCode(url=url, prompt=prompt, find_items=find_items)
+    HC_class.add_filter(filter="price from", value=100)
+    HC_class.add_filter(filter="price to", value=1800)
 
     HC_class.apply_param()
+
     products = HC_class.get_all_order(max_page=1)
 
     HO = HendlerOrder(products=products)

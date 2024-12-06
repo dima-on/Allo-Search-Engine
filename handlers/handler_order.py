@@ -34,6 +34,7 @@ class HendlerOrder:
     def get_colums_rate(self):
         colums = {}
         for product in self.products:
+            print(product.rating)
             for key in list(product.rating.keys()):
                 colums[key] = "-"
                 
