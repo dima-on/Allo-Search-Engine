@@ -107,8 +107,8 @@ def Get_orders(prompt: str):
 
     find_items = "product-card"
     HC_class = HandlerCode(url=url, prompt=prompt, find_items=find_items)
-    HC_class.add_filter(filter="price from", value=100)
-    HC_class.add_filter(filter="price to", value=1800)
+    # HC_class.add_filter(filter="price from", value=100)
+    # HC_class.add_filter(filter="price to", value=1800)
 
     HC_class.apply_param()
 
